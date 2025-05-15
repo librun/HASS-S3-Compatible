@@ -1,6 +1,6 @@
 # S3 Compatible for Home Assistant
 
-A Home Assistant custom integration to support uploading backups to S3 compatible endpoints. This is a slight modification of the official [AWS S3](https://www.home-assistant.io/integrations/aws_s3) integration.
+A Home Assistant custom integration to support uploading backups to S3 compatible endpoints. This is a slight modification of the official [AWS S3](https://www.home-assistant.io/integrations/aws_s3) integration and combinate function from [HASS-S3](https://github.com/robmarkcole/HASS-S3)
 
 ## Installation
 
@@ -11,7 +11,7 @@ You can install this component in two ways: via [HACS](https://github.com/hacs/i
 1. Open HACS
 2. Click the three dots in the upper right
 3. Click on Custom repositories
-4. Put `https://github.com/librun/HAAS-S3-Compatible` as the repository
+4. Put `https://github.com/librun/HASS-S3-Compatible` as the repository
 5. Select `Integration` as the Type
 6. Click Add
 7. On main HASC screen, select `S3 Compatible` and install
