@@ -11,7 +11,7 @@ You can install this component in two ways: via [HACS](https://github.com/hacs/i
 1. Open HACS
 2. Click the three dots in the upper right
 3. Click on Custom repositories
-4. Put `https://github.com/PhantomPhoton/S3-Compatible` as the repository
+4. Put `https://github.com/librun/S3-Compatible` as the repository
 5. Select `Integration` as the Type
 6. Click Add
 7. On main HASC screen, select `S3 Compatible` and install
