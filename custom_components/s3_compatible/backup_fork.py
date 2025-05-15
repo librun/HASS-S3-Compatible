@@ -3,6 +3,7 @@ from homeassistant.components.backup import (
     suggested_filename,
 )
 
+
 def suggested_filenames_with_dir(dir: str, backup: AgentBackup) -> tuple[str, str]:
     """Return the suggested filenames for the backup and metadata files."""
     base_name = suggested_filename(backup).rsplit(".", 1)[0]
