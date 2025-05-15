@@ -1,4 +1,4 @@
-"""The S3 Compatible integration."""
+"""The AWS S3 integration."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ from typing import cast
 
 from aiobotocore.client import AioBaseClient as S3Client
 from aiobotocore.session import AioSession
-from botocore.config import Config
 from botocore.exceptions import ClientError, ConnectionError, ParamValidationError
 
 from homeassistant.config_entries import ConfigEntry
@@ -15,14 +14,14 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError, ConfigEntryNotReady
 
 from .const import (
-    BOTO_CONFIG,
     CONF_ACCESS_KEY_ID,
     CONF_BUCKET,
     CONF_ENDPOINT_URL,
     CONF_SECRET_ACCESS_KEY,
     DATA_BACKUP_AGENT_LISTENERS,
-    DOMAIN,
 )
+
+from .const_fork import DOMAIN
 
 type S3ConfigEntry = ConfigEntry[S3Client]
 
@@ -42,7 +41,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: S3ConfigEntry) -> bool:
             endpoint_url=data.get(CONF_ENDPOINT_URL),
             aws_secret_access_key=data[CONF_SECRET_ACCESS_KEY],
             aws_access_key_id=data[CONF_ACCESS_KEY_ID],
-            config=BOTO_CONFIG,
         ).__aenter__()
         await client.head_bucket(Bucket=data[CONF_BUCKET])
     except ClientError as err:

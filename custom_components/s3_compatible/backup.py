@@ -1,4 +1,4 @@
-"""Backup platform for the S3 Compatible integration."""
+"""Backup platform for the AWS S3 integration."""
 
 from collections.abc import AsyncIterator, Callable, Coroutine
 import functools
@@ -19,7 +19,8 @@ from homeassistant.components.backup import (
 from homeassistant.core import HomeAssistant, callback
 
 from . import S3ConfigEntry
-from .const import CONF_BUCKET, DATA_BACKUP_AGENT_LISTENERS, DOMAIN
+from .const import CONF_BUCKET, DATA_BACKUP_AGENT_LISTENERS
+from .const_fork import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 CACHE_TTL = 300

@@ -1,8 +1,9 @@
-"""Config flow for the S3 Compatible integration."""
+"""Config flow for the AWS S3 integration."""
 
 from __future__ import annotations
 
 from typing import Any
+from urllib.parse import urlparse
 
 from aiobotocore.session import AioSession
 from botocore.exceptions import ClientError, ConnectionError, ParamValidationError
@@ -17,7 +18,6 @@ from homeassistant.helpers.selector import (
 )
 
 from .const import (
-    BOTO_CONFIG,
     CONF_ACCESS_KEY_ID,
     CONF_BUCKET,
     CONF_ENDPOINT_URL,
@@ -25,8 +25,9 @@ from .const import (
     DEFAULT_ENDPOINT_URL,
     DESCRIPTION_AWS_S3_DOCS_URL,
     DESCRIPTION_BOTO3_DOCS_URL,
-    DOMAIN,
 )
+
+from .const_fork import DOMAIN, AWS_DOMAIN
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
@@ -59,29 +60,33 @@ class S3ConfigFlow(ConfigFlow, domain=DOMAIN):
                 }
             )
 
-            try:
-                session = AioSession()
-                async with session.create_client(
-                    "s3",
-                    endpoint_url=user_input.get(CONF_ENDPOINT_URL),
-                    aws_secret_access_key=user_input[CONF_SECRET_ACCESS_KEY],
-                    aws_access_key_id=user_input[CONF_ACCESS_KEY_ID],
-                    config=BOTO_CONFIG,
-                ) as client:
-                    await client.head_bucket(Bucket=user_input[CONF_BUCKET])
-            except ClientError:
-                errors["base"] = "invalid_credentials"
-            except ParamValidationError as err:
-                if "Invalid bucket name" in str(err):
-                    errors[CONF_BUCKET] = "invalid_bucket_name"
-            except ValueError:
+            if not urlparse(user_input[CONF_ENDPOINT_URL]).hostname.endswith(
+                AWS_DOMAIN
+            ):
                 errors[CONF_ENDPOINT_URL] = "invalid_endpoint_url"
-            except ConnectionError:
-                errors[CONF_ENDPOINT_URL] = "cannot_connect"
             else:
-                return self.async_create_entry(
-                    title=user_input[CONF_BUCKET], data=user_input
-                )
+                try:
+                    session = AioSession()
+                    async with session.create_client(
+                        "s3",
+                        endpoint_url=user_input.get(CONF_ENDPOINT_URL),
+                        aws_secret_access_key=user_input[CONF_SECRET_ACCESS_KEY],
+                        aws_access_key_id=user_input[CONF_ACCESS_KEY_ID],
+                    ) as client:
+                        await client.head_bucket(Bucket=user_input[CONF_BUCKET])
+                except ClientError:
+                    errors["base"] = "invalid_credentials"
+                except ParamValidationError as err:
+                    if "Invalid bucket name" in str(err):
+                        errors[CONF_BUCKET] = "invalid_bucket_name"
+                except ValueError:
+                    errors[CONF_ENDPOINT_URL] = "invalid_endpoint_url"
+                except ConnectionError:
+                    errors[CONF_ENDPOINT_URL] = "cannot_connect"
+                else:
+                    return self.async_create_entry(
+                        title=user_input[CONF_BUCKET], data=user_input
+                    )
 
         return self.async_show_form(
             step_id="user",
