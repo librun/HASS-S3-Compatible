@@ -1,7 +1,7 @@
 {
   "domain": "s3_compatible",
   "name": "HASS S3 Compatible",
-  "codeowners": ["@PhantomPhoton", "@librun"],
+  "codeowners": ["@tomasbedrich", "@librun", "@PhantomPhoton"],
   "config_flow": true,
   "documentation": "https://github.com/librun/HASS-S3-Compatible",
   "iot_class": "cloud_push",
@@ -9,5 +9,5 @@
   "quality_scale": "bronze",
   "dependencies": [],
   "requirements": ["aiobotocore==2.21.1"],
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

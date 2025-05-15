@@ -20,7 +20,8 @@ from homeassistant.core import HomeAssistant, callback
 
 from . import S3ConfigEntry
 from .const import CONF_BUCKET, DATA_BACKUP_AGENT_LISTENERS
-from .const_fork import DOMAIN
+from .const_fork import DOMAIN, CONF_BACKUP_FOLDER
+from .backup_fork import suggested_filenames_with_dir
 
 _LOGGER = logging.getLogger(__name__)
 CACHE_TTL = 300
@@ -96,6 +97,7 @@ class S3BackupAgent(BackupAgent):
         super().__init__()
         self._client = entry.runtime_data
         self._bucket: str = entry.data[CONF_BUCKET]
+        self._dir: str = entry.data[CONF_BACKUP_FOLDER]
         self.name = entry.title
         self.unique_id = entry.entry_id
         self._backup_cache: dict[str, AgentBackup] = {}
@@ -113,7 +115,7 @@ class S3BackupAgent(BackupAgent):
         :return: An async iterator that yields bytes.
         """
         backup = await self._find_backup_by_id(backup_id)
-        tar_filename, _ = suggested_filenames(backup)
+        tar_filename, _ = suggested_filenames_with_dir(self._dir ,backup)
 
         response = await self._client.get_object(Bucket=self._bucket, Key=tar_filename)
         return response["Body"].iter_chunks()
@@ -130,7 +132,7 @@ class S3BackupAgent(BackupAgent):
         :param open_stream: A function returning an async iterator that yields bytes.
         :param backup: Metadata about the backup that should be uploaded.
         """
-        tar_filename, metadata_filename = suggested_filenames(backup)
+        tar_filename, metadata_filename = suggested_filenames_with_dir(self._dir, backup)
 
         try:
             if backup.size < MULTIPART_MIN_PART_SIZE_BYTES:
@@ -260,7 +262,7 @@ class S3BackupAgent(BackupAgent):
         :param backup_id: The ID of the backup that was returned in async_list_backups.
         """
         backup = await self._find_backup_by_id(backup_id)
-        tar_filename, metadata_filename = suggested_filenames(backup)
+        tar_filename, metadata_filename = suggested_filenames_with_dir(self._dir, backup)
 
         # Delete both the backup file and its metadata file
         await self._client.delete_object(Bucket=self._bucket, Key=tar_filename)

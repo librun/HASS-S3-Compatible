@@ -27,7 +27,7 @@ from .const import (
     DESCRIPTION_BOTO3_DOCS_URL,
 )
 
-from .const_fork import DOMAIN, AWS_DOMAIN
+from .const_fork import DOMAIN, AWS_DOMAIN, CONF_BACKUP_FOLDER
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
@@ -39,6 +39,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
         vol.Required(CONF_ENDPOINT_URL, default=DEFAULT_ENDPOINT_URL): TextSelector(
             config=TextSelectorConfig(type=TextSelectorType.URL)
         ),
+        vol.Optional(CONF_BACKUP_FOLDER): cv.string,
     }
 )
 
@@ -57,6 +58,7 @@ class S3ConfigFlow(ConfigFlow, domain=DOMAIN):
                 {
                     CONF_BUCKET: user_input[CONF_BUCKET],
                     CONF_ENDPOINT_URL: user_input[CONF_ENDPOINT_URL],
+                    CONF_BACKUP_FOLDER: user_input[CONF_BACKUP_FOLDER],
                 }
             )
 
