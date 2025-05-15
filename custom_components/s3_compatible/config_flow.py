@@ -19,6 +19,7 @@ from homeassistant.helpers.selector import (
 
 from .const import (
     CONF_ACCESS_KEY_ID,
+    CONF_BACKUP_FOLDER,
     CONF_BUCKET,
     CONF_ENDPOINT_URL,
     CONF_SECRET_ACCESS_KEY,
@@ -27,7 +28,7 @@ from .const import (
     DESCRIPTION_BOTO3_DOCS_URL,
 )
 
-from .const_fork import DOMAIN, AWS_DOMAIN, CONF_BACKUP_FOLDER
+from .const_fork import DOMAIN, AWS_DOMAIN
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {

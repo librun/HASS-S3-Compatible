@@ -6,15 +6,19 @@ ORIG_PATH="/homeassistant/components/aws_s3"
 NEW_DIR="${CWD}/custom_components/s3_compatible"
 
 clean_up() {
-    rm -rf ./tmp/
+    rm -rf ${TMP_DIR}
 }
 
 clone_from_orig() {
     git clone -b master -n --depth=1 --filter=tree:0 https://github.com/home-assistant/core.git ${TMP_DIR}
-    cd tmp
-    git sparse-checkout set --no-cone ${ORIG_PATH}
-    git checkout
-    cd $CWD
+    if [[ -d ${TMP_DIR} ]]; then
+        cd ${TMP_DIR}
+        git sparse-checkout set --no-cone ${ORIG_PATH}
+        git checkout
+        cd $CWD
+    else
+        echo "#### ERROR! folder ${TMP_DIR} not exists ####"
+    fi
 }
 
 mv_from_orig() {
